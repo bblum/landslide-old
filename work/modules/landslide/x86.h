@@ -66,4 +66,13 @@ bool within_function(conf_object_t *cpu, int eip, int func, int func_end);
 char *stack_trace(conf_object_t *cpu, int eip, int tid);
 char *read_string(conf_object_t *cpu, int eip);
 
+#define LS_ABORT() do { dump_stack(); assert(0); } while (0)
+static inline void dump_stack() {
+	conf_object_t *cpu = SIM_get_object("cpu0");
+	char *stack = stack_trace(cpu, GET_CPU_ATTR(cpu, eip), -1);
+	lsprintf(ALWAYS, COLOUR_BOLD COLOUR_RED "Stack trace: %s\n"
+		 COLOUR_DEFAULT, stack);
+	MM_FREE(stack);
+}
+
 #endif

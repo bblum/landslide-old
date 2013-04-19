@@ -9,6 +9,7 @@
 
 #include <simics/api.h>
 #include <stdio.h>
+#include <assert.h>
 
 #ifndef MODULE_NAME
 #error "Please define MODULE_NAME before including common.h!"
@@ -63,5 +64,15 @@ typedef int verbosity;
 	char *__ptr = MM_STRDUP(s);			\
 	assert(__ptr != NULL && "strdup failed");	\
 	__ptr; })
+
+#define HURDLE_VIOLATION(msg) do { hurdle_violation(msg); assert(0); } while (0)
+static inline void hurdle_violation(const char *msg) {
+	lsprintf(ALWAYS, COLOUR_BOLD COLOUR_RED
+		 "/!\\ /!\\ /!\\ HURDLE VIOLATION /!\\ /!\\ /!\\\n");
+	lsprintf(ALWAYS, COLOUR_BOLD COLOUR_RED "%s\n", msg);
+	lsprintf(ALWAYS, COLOUR_BOLD COLOUR_RED "Landslide can probably cope "
+		 " with this, but instead of continuing to use Landslide, please"
+		 " go fix your kernel.\n" COLOUR_DEFAULT);
+}
 
 #endif
