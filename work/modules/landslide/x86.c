@@ -85,7 +85,7 @@ int avoid_timer_interrupt_immediately(conf_object_t *cpu)
 	int buf = GET_CPU_ATTR(cpu, esp) -
 		(CUSTOM_ASSEMBLY_CODES_SIZE + CUSTOM_ASSEMBLY_CODES_STACK);
 
-	lsprintf(DEV, "Cuckoo!\n");
+	lsprintf(INFO, "Cuckoo!\n");
 
 	STATIC_ASSERT(ARRAY_SIZE(custom_assembly_codes) ==
 		      CUSTOM_ASSEMBLY_CODES_SIZE);
