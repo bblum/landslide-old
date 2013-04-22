@@ -11,7 +11,15 @@
 #include <simics/core/memory.h>
 
 /* reading and writing cpu registers */
-#define GET_CPU_ATTR(cpu, name) ((int)SIM_attr_integer(SIM_get_attribute(cpu, #name)))
+#define GET_CPU_ATTR(cpu, name) get_cpu_attr(cpu, #name)
+
+static inline int get_cpu_attr(conf_object_t *cpu, const char *name) {
+	if (!SIM_attr_is_integer(SIM_get_attribute(cpu, name))) {
+		// XXX: Hack, figure out why this actually trips
+		return 0;
+	}
+	return ((int)SIM_attr_integer(SIM_get_attribute(cpu, name)));
+}
 #define SET_CPU_ATTR(cpu, name, val) do {				\
 		attr_value_t noob = SIM_make_attr_integer(val);		\
 		set_error_t ret = SIM_set_attribute(cpu, #name, &noob);	\
