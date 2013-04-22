@@ -58,7 +58,8 @@ void found_a_bug(struct ls_state *ls)
 	print_tree_from(ls->save.current, ls->save.next_tid);
 
 	char *stack = stack_trace(ls->cpu0, ls->eip, ls->sched.cur_agent->tid);
-	lsprintf(BUG, "Stack: %s\n", stack);
+	lsprintf(BUG, COLOUR_BOLD COLOUR_RED "Current stack:"
+		 COLOUR_DEFAULT " %s\n", stack);
 	MM_FREE(stack);
 
 	PRINT_TREE_INFO(BUG, ls);
