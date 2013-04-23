@@ -14,11 +14,14 @@
 #define GET_CPU_ATTR(cpu, name) get_cpu_attr(cpu, #name)
 
 static inline int get_cpu_attr(conf_object_t *cpu, const char *name) {
-	if (!SIM_attr_is_integer(SIM_get_attribute(cpu, name))) {
-		// XXX: Hack, figure out why this actually trips
-		return 0;
+	attr_value_t ebp_attr = SIM_get_attribute(cpu, name);
+	if (!SIM_attr_is_integer(ebp_attr)) {
+		assert(ebp_attr.kind == Sim_Val_Invalid &&
+		       "GET_CPU_ATTR failed!");
+		// "Try again." WTF, simics??
+		return ((int)SIM_attr_integer(SIM_get_attribute(cpu, name)));
 	}
-	return ((int)SIM_attr_integer(SIM_get_attribute(cpu, name)));
+	return ((int)SIM_attr_integer(ebp_attr));
 }
 #define SET_CPU_ATTR(cpu, name, val) do {				\
 		attr_value_t noob = SIM_make_attr_integer(val);		\
