@@ -86,4 +86,6 @@ static inline void dump_stack() {
 	MM_FREE(stack);
 }
 
+#define STACK_TRACE_SEPARATOR ", "
+
 #endif

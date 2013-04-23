@@ -41,6 +41,24 @@
 /* Only do verbose trace if the user asked for decision info. */
 #define VERBOSE_TRACE(bug_found) (!(bug_found))
 
+/* Prints a stack trace with newlines and tabs instead of ", "s. */
+static void print_stack_trace(verbosity v, bool bug_found, const char *stack) {
+	const char *current_frame = stack;
+	bool first_frame = true;
+	while (current_frame != NULL) {
+		const char *next_frame =
+			strstr(current_frame, STACK_TRACE_SEPARATOR);
+		lsprintf(v, bug_found, "\t%s%.*s\n", first_frame ? "" : "\t",
+			 next_frame == NULL ? (int)strlen(current_frame)
+			                    : (int)(next_frame - current_frame),
+			 current_frame);
+		first_frame = false;
+		if ((current_frame = next_frame) != NULL) {
+			current_frame += strlen(STACK_TRACE_SEPARATOR);
+		}
+	}
+}
+
 static int print_tree_from(struct hax *h, int choose_thread, bool bug_found)
 {
 	int num;
@@ -58,7 +76,7 @@ static int print_tree_from(struct hax *h, int choose_thread, bool bug_found)
 			 h->trigger_count, h->chosen_thread, choose_thread);
 		print_qs(BUG, h->oldsched);
 		printf(BUG, COLOUR_DEFAULT "\n");
-		lsprintf(BUG, bug_found, "\t%s\n", h->stack_trace);
+		print_stack_trace(BUG, bug_found, h->stack_trace);
 	}
 
 	return num;
@@ -79,8 +97,9 @@ void _found_a_bug(struct ls_state *ls, bool bug_found)
 	print_tree_from(ls->save.current, ls->save.next_tid, bug_found);
 
 	char *stack = stack_trace(ls->cpu0, ls->eip, ls->sched.cur_agent->tid);
-	lsprintf(BUG, bug_found, COLOUR_BOLD COLOUR_RED "Current stack:"
-		 COLOUR_DEFAULT " %s\n", stack);
+	lsprintf(BUG, bug_found, COLOUR_BOLD COLOUR_RED "Current stack:\n"
+		 COLOUR_DEFAULT);
+	print_stack_trace(BUG, bug_found, stack);
 	MM_FREE(stack);
 
 	PRINT_TREE_INFO(BUG, bug_found, ls);
