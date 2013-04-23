@@ -42,11 +42,13 @@
 
 typedef int verbosity;
 
-#define lsprintf(v, ...) do { if (v <= MAX_VERBOSITY) {			\
-	fprintf(stderr, "\033[80D" COLOUR_BOLD MODULE_COLOUR		\
-		"[" MODULE_NAME "]              " COLOUR_DEFAULT	\
-		"\033[80D\033[16C" __VA_ARGS__);			\
+// Can be called directly if you want to override the module name and colour.
+#define _lsprintf(v, mn, mc, ...) do { if (v <= MAX_VERBOSITY) {	\
+	fprintf(stderr, "\033[80D" COLOUR_BOLD mc "[" mn "]              " \
+		COLOUR_DEFAULT "\033[80D\033[16C" __VA_ARGS__);		\
 	} } while (0)
+
+#define lsprintf(v, ...) _lsprintf(v, MODULE_NAME, MODULE_COLOUR, __VA_ARGS__)
 
 #ifdef printf
 #undef printf
