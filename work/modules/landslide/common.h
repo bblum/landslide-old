@@ -27,6 +27,7 @@
 #define COLOUR_BLUE "\033[34m"
 #define COLOUR_MAGENTA "\033[35m"
 #define COLOUR_CYAN "\033[36m"
+#define COLOUR_GREY "\033[37m"
 #define COLOUR_WHITE "\033[38m"
 #define COLOUR_DEFAULT "\033[00m"
 

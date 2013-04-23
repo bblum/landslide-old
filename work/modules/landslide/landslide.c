@@ -255,7 +255,9 @@ int symtable_lookup(char *buf, int maxlen, int addr)
 		file = strstr(file, LIKELY_DIR) + strlen(LIKELY_DIR);
 	}
 
-	int ret = snprintf(buf, maxlen, COLOUR_BOLD COLOUR_CYAN "%s" COLOUR_DEFAULT " (%s:%d)", func, file, line);
+	int ret = snprintf(buf, maxlen, COLOUR_BOLD COLOUR_CYAN "%s"
+			   COLOUR_DARK COLOUR_GREY " (%s:%d)" COLOUR_DEFAULT,
+			   func, file, line);
 
 	SIM_free_attribute(result);
 	return ret;
